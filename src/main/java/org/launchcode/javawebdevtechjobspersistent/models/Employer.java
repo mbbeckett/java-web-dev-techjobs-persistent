@@ -38,7 +38,7 @@ public class Employer extends AbstractEntity {
 //    mapped by employer field of the Job class
     @OneToMany
     @JoinColumn
-    private final List<Job> jobs = new ArrayList<>();
+    private List<Job> jobs = new ArrayList<>();
 
     public List<Job> getJobs() { return jobs; }
 }

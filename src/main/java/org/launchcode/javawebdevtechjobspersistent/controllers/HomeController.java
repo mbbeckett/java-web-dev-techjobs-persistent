@@ -1,5 +1,6 @@
 package org.launchcode.javawebdevtechjobspersistent.controllers;
 
+import org.launchcode.javawebdevtechjobspersistent.models.Employer;
 import org.launchcode.javawebdevtechjobspersistent.models.Job;
 import org.launchcode.javawebdevtechjobspersistent.models.data.EmployerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,11 +47,20 @@ public class HomeController {
         if (errors.hasErrors()) {
             model.addAttribute("title", "Add Job");
             return "add";
+        } else {
+            Optional<Employer> employerRepositoryById = employerRepository.findById(employerId);
+            if(employerRepositoryById.isEmpty()){
+                model.addAttribute("title", "Invalid ID" + employerId);
+            } else {
+                model.addAttribute("title", newJob.getName());
+                model.addAttribute("skills", newJob.getSkills());
+                return "view";
+
+            }
         }
 
         return "redirect:";
     }
-
     @GetMapping("view/{jobId}")
     public String displayViewJob(Model model, @PathVariable int jobId) {
         Optional optJob = employerRepository.findById(jobId);
