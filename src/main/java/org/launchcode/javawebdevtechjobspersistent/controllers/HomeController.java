@@ -2,6 +2,7 @@ package org.launchcode.javawebdevtechjobspersistent.controllers;
 
 import org.launchcode.javawebdevtechjobspersistent.models.Employer;
 import org.launchcode.javawebdevtechjobspersistent.models.Job;
+import org.launchcode.javawebdevtechjobspersistent.models.Skill;
 import org.launchcode.javawebdevtechjobspersistent.models.data.EmployerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -30,11 +31,11 @@ public class HomeController {
         return "index";
     }
 
-    @GetMapping("add")
+    @GetMapping("/add")
     public String displayAddJobForm(Model model) {
         model.addAttribute("title", "Add Job");
         model.addAttribute(new Job());
-        model.addAttribute("job", employerRepository.findAll());
+//        model.addAttribute("job", employerRepository.findAll());
         return "add";
     }
 
@@ -44,23 +45,29 @@ public class HomeController {
                                     @RequestParam int employerId,
                                     @RequestParam List<Integer> skills) {
 
-        if (errors.hasErrors()) {
-            model.addAttribute("title", "Add Job");
+//        if (errors.hasErrors()) {
+//            model.addAttribute("title", "Add Job");
+//            return "add";
+//        } else {
+//            Optional<Employer> employerRepositoryById = employerRepository.findById(employerId);
+//            if(employerRepositoryById.isEmpty()){
+//                model.addAttribute("title", "Invalid ID" + employerId);
+//            } else {
+//
+//                model.addAttribute("employers", newJob.getEmployer());
+//                model.addAttribute("skills", newJob.getSkills());
+//            }
+//        }
+
+        if(errors.hasErrors()) {
+            model.addAttribute(new Job());
             return "add";
-        } else {
-            Optional<Employer> employerRepositoryById = employerRepository.findById(employerId);
-            if(employerRepositoryById.isEmpty()){
-                model.addAttribute("title", "Invalid ID" + employerId);
-            } else {
-                model.addAttribute("title", newJob.getName());
-                model.addAttribute("skills", newJob.getSkills());
-                return "view";
-
-            }
         }
-
-        return "redirect:";
+            employerRepository.save(newJob.getEmployer());
+        return "add";
     }
+
+
     @GetMapping("view/{jobId}")
     public String displayViewJob(Model model, @PathVariable int jobId) {
         Optional optJob = employerRepository.findById(jobId);

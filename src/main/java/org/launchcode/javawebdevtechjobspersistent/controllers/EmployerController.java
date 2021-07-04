@@ -18,42 +18,48 @@ public class EmployerController {
     @Autowired
     private EmployerRepository employerRepository;
 
-    @GetMapping
+//    RequestMapping("/")
+    @GetMapping("/employers")
     public String displayAllEmployers(Model model){
         model.addAttribute("title", "All Employers");
         model.addAttribute("employers", employerRepository.findAll());
-        return "employers/index";
+        return "/";
     }
 
-    @GetMapping("add")
+    @GetMapping("/add")
     public String displayAddEmployerForm(Model model) {
+        model.addAttribute("title", "Add Employer");
         model.addAttribute(new Employer());
-        return "employers/add";
+
+        return "add";
     }
 
-    @PostMapping("add")
+    @PostMapping("employers/add")
     public String processAddEmployerForm(@ModelAttribute @Valid Employer newEmployer,
                                     Errors errors, Model model) {
 
         if (errors.hasErrors()) {
+            model.addAttribute(new Employer());
             return "employers/add";
         }
 
         employerRepository.save(newEmployer);
 
-        return "redirect:";
+        return "employers/add";
     }
 
     @GetMapping("view/{employerId}")
     public String displayViewEmployer(Model model, @PathVariable int employerId) {
 
-        Optional optEmployer = employerRepository.findById(employerId);
-        if (optEmployer.isPresent()) {
-            Employer employer = (Employer) optEmployer.get();
-            model.addAttribute("employer", employer);
-            return "employers/view";
-        } else {
-            return "redirect:../";
+            Optional optEmployer = employerRepository.findById(employerId);
+            if (optEmployer.isPresent()) {
+                Employer employer = (Employer) optEmployer.get();
+                model.addAttribute("employer", employer.getName());
+//              model.addAttribute("location", employer.getLocation());
+            } else {
+                model.addAttribute("title", "All Employers");
+                model.addAttribute("Employers", employerRepository.findAll());
         }
+            return "redirect:/";
     }
 }

@@ -7,7 +7,6 @@ import javax.validation.constraints.NotNull;
 public class Job extends AbstractEntity{
 
     @ManyToOne
-    @NotNull(message = "Employer is required")
     private Employer employer;
 
     private String skills;
@@ -15,10 +14,10 @@ public class Job extends AbstractEntity{
     public Job() {
     }
 
-    public Job(Employer anEmployer, String someSkills) {
+    public Job(Employer employer, String skills) {
         super();
-        this.employer = anEmployer;
-        this.skills = someSkills;
+        this.employer = employer;
+        this.skills = skills;
     }
 
     // Getters and setters.
@@ -31,9 +30,7 @@ public class Job extends AbstractEntity{
         this.employer = employer;
     }
 
-    public String getSkills() {
-        return skills;
-    }
+    public String getSkills() { return skills; }
 
     public void setSkills(String skills) {
         this.skills = skills;
