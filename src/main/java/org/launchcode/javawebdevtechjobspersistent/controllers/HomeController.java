@@ -23,27 +23,54 @@ public class HomeController {
     @Autowired
     private EmployerRepository employerRepository;
 
-    @RequestMapping("")
+    @RequestMapping("/index")
     public String index(Model model) {
-
         model.addAttribute("title", "My Jobs");
-
         return "index";
     }
 
     @GetMapping("/add")
     public String displayAddJobForm(Model model) {
         model.addAttribute("title", "Add Job");
-        model.addAttribute(new Job());
-//        model.addAttribute("job", employerRepository.findAll());
+        model.addAttribute("job", new Job());
         return "add";
     }
 
-    @PostMapping("add")
+    @PostMapping("/add")
     public String processAddJobForm(@ModelAttribute @Valid Job newJob,
                                     Errors errors, Model model,
                                     @RequestParam int employerId,
                                     @RequestParam List<Integer> skills) {
+        if(errors.hasErrors()) {
+//            include message?
+            return "redirect";
+        }
+        //        what is happening in this block of code?
+        model.addAttribute("employerId", employerId);
+        model.addAttribute("skills", newJob.getSkills());
+        employerRepository.save(newJob.getEmployer());
+        return "add";
+    }
+
+    @GetMapping("view/{jobId}")
+    public String displayViewJob(Model model, @PathVariable int jobId) {
+        Optional optJob = employerRepository.findById(jobId);
+        if(optJob.isPresent()){
+            Job job = (Job) optJob.get();
+            model.addAttribute("job", job);
+            return "view/{jobId}";
+        }
+        return "redirect:../";
+    }
+}
+
+
+
+
+
+//processAddJobForm?
+// employerRepository.save(newJob.getEmployer());
+
 
 //        if (errors.hasErrors()) {
 //            model.addAttribute("title", "Add Job");
@@ -59,25 +86,3 @@ public class HomeController {
 //            }
 //        }
 
-        if(errors.hasErrors()) {
-            model.addAttribute(new Job());
-            return "add";
-        }
-            employerRepository.save(newJob.getEmployer());
-        return "add";
-    }
-
-
-    @GetMapping("view/{jobId}")
-    public String displayViewJob(Model model, @PathVariable int jobId) {
-        Optional optJob = employerRepository.findById(jobId);
-        if(optJob.isPresent()){
-            Job job = (Job) optJob.get();
-            model.addAttribute("job", job);
-            return "view/{jobId}";
-        }
-        return "redirect:../";
-    }
-
-
-}

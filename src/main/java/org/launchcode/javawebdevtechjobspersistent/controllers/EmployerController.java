@@ -18,48 +18,51 @@ public class EmployerController {
     @Autowired
     private EmployerRepository employerRepository;
 
-//    RequestMapping("/")
-    @GetMapping("/employers")
+    @GetMapping
     public String displayAllEmployers(Model model){
         model.addAttribute("title", "All Employers");
         model.addAttribute("employers", employerRepository.findAll());
-        return "/";
+        return "employers/index";
     }
 
     @GetMapping("/add")
     public String displayAddEmployerForm(Model model) {
         model.addAttribute("title", "Add Employer");
-        model.addAttribute(new Employer());
-
-        return "add";
-    }
-
-    @PostMapping("employers/add")
-    public String processAddEmployerForm(@ModelAttribute @Valid Employer newEmployer,
-                                    Errors errors, Model model) {
-
-        if (errors.hasErrors()) {
-            model.addAttribute(new Employer());
-            return "employers/add";
-        }
-
-        employerRepository.save(newEmployer);
-
+        model.addAttribute("employer", new Employer());
         return "employers/add";
     }
 
-    @GetMapping("view/{employerId}")
-    public String displayViewEmployer(Model model, @PathVariable int employerId) {
+    @PostMapping("/add")
+    public String processAddEmployerForm(@ModelAttribute @Valid Employer newEmployer,
+                                    Errors errors, Model model) {
+        if (errors.hasErrors()) {
+            model.addAttribute(new Employer());
+            return "redirect:";
+        }
+        employerRepository.save(newEmployer);
+        return "employers/index";
+    }
 
+    @GetMapping("/view/{employerId}")
+    public String displayViewEmployer(Model model, @PathVariable int employerId) {
             Optional optEmployer = employerRepository.findById(employerId);
             if (optEmployer.isPresent()) {
-                Employer employer = (Employer) optEmployer.get();
-                model.addAttribute("employer", employer.getName());
-//              model.addAttribute("location", employer.getLocation());
-            } else {
-                model.addAttribute("title", "All Employers");
-                model.addAttribute("Employers", employerRepository.findAll());
+                Employer employers = (Employer) optEmployer.get();
+                model.addAttribute("employers", employers);
+                model.addAttribute("employerId", employerId);
+                return "view/{employerId}";
         }
-            return "redirect:/";
+            return "redirect:";
     }
 }
+
+
+
+
+
+
+
+
+//            } else {
+//                model.addAttribute("title", "All Employers");
+//                model.addAttribute("Employers", employerRepository.findAll());
