@@ -11,19 +11,25 @@ import java.util.List;
 @Entity
 public class Employer extends AbstractEntity {
 
+//    FIELDS
+//    TODO: ONE EMPLOYER TO MANY JOBS
+    @OneToMany
+    @JoinColumn
+    private List<Job> jobs = new ArrayList<>();
+
     @NotNull
     @Size(min = 3, max = 100, message = "Location must be between 3 and 100 characters.")
     private String location;
-//is it being mapped to employer tho? mappedby
-    @OneToMany
-    @JoinColumn
-    private final List<Job> jobs = new ArrayList<>();
+
+//    CONSTRUCTORS
+    public Employer(List<Job> jobs, String location) {
+        this.jobs = jobs;
+        this.location = location;
+    }
 
     public Employer(){}
 
-    public Employer(String location) {
-        this.location = location; }
-
+//    GETTERS SETTERS
     public String getLocation() {
         return location;
     }

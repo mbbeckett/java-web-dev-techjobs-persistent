@@ -11,6 +11,7 @@ import java.util.Objects;
 @MappedSuperclass
 public abstract class AbstractEntity {
 
+//    FIELDS
     @Id
     @GeneratedValue
     private int id;
@@ -20,6 +21,13 @@ public abstract class AbstractEntity {
     @Size(min = 3, max = 100, message = "Name must be between 3 and 100 characters.")
     private String name;
 
+//    CONSTRUCTOR
+//    public AbstractEntity(int id, String name) {
+//        this.id = id;
+//        this.name = name;
+//    }
+
+//    GETTERS SETTERS
     public int getId() {
         return id;
     }
@@ -32,6 +40,7 @@ public abstract class AbstractEntity {
         this.name = name;
     }
 
+//    METHODS
     @Override
     public String toString() {
         return name;

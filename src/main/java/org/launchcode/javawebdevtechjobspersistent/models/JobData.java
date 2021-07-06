@@ -9,7 +9,6 @@ import java.util.ArrayList;
  */
 public class JobData {
 
-
     /**
      * Returns the results of searching the Jobs data by field and search term.
      *

@@ -7,31 +7,36 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 public class Skill extends AbstractEntity {
 
+//    FIELDS
+//    TODO: MANY TO MANY RELATIONSHIP WITH JOBS
     @ManyToMany(mappedBy = "skills")
-    private ArrayList<Job> jobs;
+    private final List<Job> jobs = new ArrayList<>();
 
     @NotNull
     @NotBlank(message = "Description is required.")
     @Size(min = 8, max = 200)
     private String description;
 
+//    CONSTRUCTORS
+    public Skill(String description) {
+    this.description = description;
+}
+
     public Skill(){}
 
-    public Skill(ArrayList<Job> jobs, String description) {
-        this.jobs = jobs;
-        this.description = description;
-    }
-    public ArrayList<Job> getJobs() { return jobs;}
-
-    public Skill(String description) {
-        this.description = description;
-    }
+    //    GETTERS SETTERS
+    public String getDescription() { return description; }
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public List<Job> getJobs() {
+        return jobs;
     }
 }

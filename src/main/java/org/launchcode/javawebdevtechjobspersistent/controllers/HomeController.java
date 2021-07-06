@@ -41,7 +41,7 @@ public class HomeController {
     @GetMapping("add")
     public String displayAddJobForm(Model model) {
         model.addAttribute("title", "Add Job");
-        model.addAttribute(new Job());
+        model.addAttribute("job", new Job());
         model.addAttribute("jobs", jobRepository.findAll());
         return "/add";
     }
@@ -51,18 +51,21 @@ public class HomeController {
                                     Errors errors, Model model,
                                     @RequestParam Integer employerId,
                                     @RequestParam List<Integer> skills) {
+        if(!errors.hasErrors()) {
+            List<Skill> skillObjs = (List<Skill>) skillRepository.findAllById(skills);
+            newJob.setSkills(skillObjs);
+            model.addAttribute("title", "Add Skill to: " + newJob.getName());
+            model.addAttribute("skills", skillRepository.findAll());
 
-        if(errors.hasErrors()) {
-            model.addAttribute("title", "Add Job");
-            return "/add";
-        }
-        List<Skill> skillObjs = (List<Skill>) skillRepository.findAllById(skills);
-        newJob.setSkills(skillObjs);
-        Optional<Employer> optionalEmployer = employerRepository.findById(employerId);
-        if(optionalEmployer.isPresent()){
-            Employer employerParam = optionalEmployer.get();
-            model.addAttribute("employer", employerParam);
-            model.addAttribute("skills", newJob.getSkills());
+            Optional<Employer> optionalEmployer = employerRepository.findById(employerId);
+            if(optionalEmployer.isPresent()){
+                Employer employerParam = optionalEmployer.get();
+
+                employerRepository.save(employerParam);
+                model.addAttribute("employer", employerParam);
+                //jobRepository.save(newJob);
+//                model.addAttribute("skills", newJob.getSkills());
+            }
         }
         return "/view";
     }
@@ -76,14 +79,40 @@ public class HomeController {
             Job job = optionalJob.get();
             model.addAttribute("job", job.getId());
         }
-        return "/view/{jobId}";
+        return "redirect:view?jobId=" + jobId;
+
+//        return "/view/{jobId}";
     }
 }
 
 
+//        if(!errors.hasErrors()) {
+//                List<Skill> skillObjs = (List<Skill>) skillRepository.findAllById(skills);
+//        newJob.setSkills(skillObjs);
+//        Optional<Employer> optionalEmployer = employerRepository.findById(employerId);
+//        if(optionalEmployer.isPresent()){
+//        Employer employerParam = optionalEmployer.get();
+//        jobRepository.save(newJob);
+//        employerRepository.save(employerParam);
+//        model.addAttribute("employer", employerParam);
+//        model.addAttribute("skills", newJob.getSkills());
+//        }
+//        return "redirect:";
+//        }
+//        return "/view";
 
-
-
+//    List<Skill> skillObjs = (List<Skill>) skillRepository.findAllById(skills);
+//        newJob.setSkills(skillObjs);
+//                model.addAttribute("title", "Add Skills to: " + newJob.getName());
+//                model.addAttribute("skills", newJob.getSkills());
+//                Optional<Employer> optionalEmployer = employerRepository.findById(employerId);
+//        if(optionalEmployer.isPresent()){
+//        Employer employerParam = optionalEmployer.get();
+//        jobRepository.save(newJob);
+//        employerRepository.save(employerParam);
+//        model.addAttribute("employer", employerParam);
+//        }
+//        return "view";
 
 
 

@@ -4,31 +4,34 @@ import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
 public class Job extends AbstractEntity{
 
+//    FIELDS
     @ManyToOne
     @NotNull(message = "Employer required.")
     private Employer employer;
-//there can be many jobs for each employer but one employer per job.
 
-    @NotNull
-    @NotBlank(message = "Skills required.")
+//    TODO: WHAT DATA TYPE IS THE SKILLS FIELD?
+    @ManyToMany
     @Size(min = 8, max = 200)
-    private List skills;
+    private List<Skill> skills = new ArrayList<>();
 
-    public Job() {
+//    CONSTRUCTORS
+    public Job(Employer employer) {
+        this.employer = employer;
     }
 
-    public Job(Employer employer, List skills) {
-        this.employer = employer;
+    public Job(List<Skill> skills) {
         this.skills = skills;
     }
 
-// Getters and setters.
+    public Job() { }
 
+//    GETTERS SETTERS
     public Employer getEmployer() {
         return employer;
     }
@@ -37,9 +40,9 @@ public class Job extends AbstractEntity{
         this.employer = employer;
     }
 
-    public List getSkills() { return skills; }
+    public List<Skill> getSkills() { return skills; }
 
-    public void setSkills(List skills) {
+    public void setSkills(List<Skill> skills) {
         this.skills = skills;
     }
 }
