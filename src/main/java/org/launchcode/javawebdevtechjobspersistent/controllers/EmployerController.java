@@ -21,15 +21,15 @@ public class EmployerController {
     @GetMapping
     public String displayAllEmployers(Model model){
         model.addAttribute("title", "All Employers");
-        model.addAttribute("employer", employerRepository.findAll());
+        model.addAttribute("employers", employerRepository.findAll());
         return "employers/index";
     }
 
     @GetMapping("add")
     public String displayAddEmployerForm(Model model) {
         model.addAttribute("title", "Add Employer");
-        model.addAttribute(new Employer());
-        model.addAttribute("employers", employerRepository.findAll());
+        model.addAttribute("employer", new Employer());
+//        model.addAttribute("employers", employerRepository.findAll());
         return "employers/add";
     }
 
@@ -41,7 +41,7 @@ public class EmployerController {
             return "employers/add";
         }
         employerRepository.save(newEmployer);
-        return "employers/view";
+        return "employers/index";
     }
 
     @GetMapping("view/{employerId}")
