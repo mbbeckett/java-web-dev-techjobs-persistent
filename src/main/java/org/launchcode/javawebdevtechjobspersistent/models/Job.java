@@ -4,6 +4,7 @@ import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.util.List;
 
 @Entity
 public class Job extends AbstractEntity{
@@ -17,12 +18,12 @@ public class Job extends AbstractEntity{
     @NotNull
     @NotBlank(message = "Skills required.")
     @Size(min = 8, max = 200)
-    private Skill skills;
+    private List skills;
 
     public Job() {
     }
 
-    public Job(Employer employer, Skill skills) {
+    public Job(Employer employer, List skills) {
         this.employer = employer;
         this.skills = skills;
     }
@@ -37,9 +38,9 @@ public class Job extends AbstractEntity{
         this.employer = employer;
     }
 
-    public Skill getSkills() { return skills; }
+    public List getSkills() { return skills; }
 
-    public void setSkills(Skill skills) {
+    public void setSkills(List skills) {
         this.skills = skills;
     }
 }

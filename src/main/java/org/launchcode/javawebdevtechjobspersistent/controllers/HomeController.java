@@ -60,10 +60,10 @@ public class HomeController {
         List<Skill> skillObjs = (List<Skill>) skillRepository.findAllById(skills);
         newJob.setSkills(skillObjs);
 
-        jobRepository.save(newJob);
-
-        model.addAttribute("employerId", employerRepository.findById(employerId));
-        model.addAttribute("skills", newJob.getSkills());
+//        jobRepository.save(newJob);
+//
+//        model.addAttribute("employerId", employerRepository.findById(employerId));
+//        model.addAttribute("skills", newJob.getSkills());
         return "/view";
     }
 
