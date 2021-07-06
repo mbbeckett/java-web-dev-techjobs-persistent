@@ -6,12 +6,13 @@ import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.util.ArrayList;
 
 @Entity
 public class Skill extends AbstractEntity {
 
     @ManyToMany(mappedBy = "skills")
-    private Job jobs;
+    private ArrayList<Job> jobs;
 
     @NotNull
     @NotBlank(message = "Description is required.")
@@ -20,16 +21,14 @@ public class Skill extends AbstractEntity {
 
     public Skill(){}
 
-    public Job getJobs() {
-        return jobs;
+    public Skill(ArrayList<Job> jobs, String description) {
+        this.jobs = jobs;
+        this.description = description;
     }
+    public ArrayList<Job> getJobs() { return jobs;}
 
     public Skill(String description) {
         this.description = description;
-    }
-
-    public String getDescription() {
-        return description;
     }
 
     public void setDescription(String description) {

@@ -14,7 +14,6 @@ public class Job extends AbstractEntity{
     private Employer employer;
 //there can be many jobs for each employer but one employer per job.
 
-    @ManyToMany(mappedBy = "jobs")
     @NotNull
     @NotBlank(message = "Skills required.")
     @Size(min = 8, max = 200)
