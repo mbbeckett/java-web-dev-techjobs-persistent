@@ -13,20 +13,21 @@ public class Job extends AbstractEntity{
     private Employer employer;
 //there can be many jobs for each employer but one employer per job.
 
+    @ManyToMany(mappedBy = "jobs")
     @NotNull
     @NotBlank(message = "Skills required.")
     @Size(min = 8, max = 200)
-    private String skills;
+    private Skill skills;
 
     public Job() {
     }
 
-    public Job(Employer employer, String skills) {
+    public Job(Employer employer, Skill skills) {
         this.employer = employer;
         this.skills = skills;
     }
 
-    // Getters and setters.
+// Getters and setters.
 
     public Employer getEmployer() {
         return employer;
@@ -36,9 +37,9 @@ public class Job extends AbstractEntity{
         this.employer = employer;
     }
 
-    public String getSkills() { return skills; }
+    public Skill getSkills() { return skills; }
 
-    public void setSkills(String skills) {
+    public void setSkills(Skill skills) {
         this.skills = skills;
     }
 }
