@@ -18,7 +18,7 @@ public class EmployerController {
     @Autowired
     private EmployerRepository employerRepository;
 
-    @GetMapping
+    @GetMapping("index")
     public String displayAllEmployers(Model model){
         model.addAttribute("title", "All Employers");
         model.addAttribute("employers", employerRepository.findAll());
@@ -28,7 +28,7 @@ public class EmployerController {
     @GetMapping("add")
     public String displayAddEmployerForm(Model model) {
         model.addAttribute("title", "Add Employer");
-        model.addAttribute("employer", new Employer());
+        model.addAttribute(new Employer());
         model.addAttribute("employers", employerRepository.findAll());
         return "employers/add";
     }
@@ -38,23 +38,26 @@ public class EmployerController {
                                     Errors errors, Model model) {
         if (errors.hasErrors()) {
             model.addAttribute("title", "Add Employer");
+            model.addAttribute(new Employer());
             return "employers/add";
         }
         employerRepository.save(newEmployer);
-        return "employers/index";
+        return "redirect:";
     }
 
     @GetMapping("view/{employerId}")
     public String displayViewEmployer(Model model, @PathVariable int employerId) {
-            Optional optEmployer = employerRepository.findById(employerId);
-            if(optEmployer.isEmpty()){
+
+        Optional result = employerRepository.findById(employerId);
+
+            if(result.isEmpty()){
                 model.addAttribute("title", "Invalid Employer ID: " + employerId);
             } else {
-                Employer employers = (Employer) optEmployer.get();
-                model.addAttribute("employer", employers.getJobs());
-                model.addAttribute("employerId", employers.getId());
+                Employer employer = (Employer) result.get();
+                model.addAttribute("title","Employer: " + employer.getName());
+                model.addAttribute("employer", employer);
             }
-            return "/view/{employerId}";
+            return "view/{employerId}";
     }
 }
 

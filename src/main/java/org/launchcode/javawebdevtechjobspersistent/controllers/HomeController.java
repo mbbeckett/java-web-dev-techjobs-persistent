@@ -31,17 +31,17 @@ public class HomeController {
     @Autowired
     private EmployerRepository employerRepository;
 
-    @RequestMapping("/index")
+    @RequestMapping("index")
     public String index(Model model) {
         model.addAttribute("title", "My Jobs");
         model.addAttribute("jobs", jobRepository.findAll());
-        return "index";
+        return "/index";
     }
 
     @GetMapping("add")
     public String displayAddJobForm(Model model) {
         model.addAttribute("title", "Add Job");
-        model.addAttribute("job", new Job());
+        model.addAttribute(new Job());
         model.addAttribute("jobs", jobRepository.findAll());
         return "/add";
     }

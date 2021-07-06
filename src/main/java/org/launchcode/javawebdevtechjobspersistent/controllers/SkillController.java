@@ -20,8 +20,8 @@ public class SkillController {
 
     @GetMapping
     private String displayAllSkills(Model model){
-        model.addAttribute("skills", skillRepository.findAll());
         model.addAttribute("title", "All Skills");
+        model.addAttribute("skills", skillRepository.findAll());
         return("skills/index");
     }
 
@@ -29,7 +29,7 @@ public class SkillController {
     public String displayAddSkillForm(Model model) {
         model.addAttribute("title", "Add Skills");
         model.addAttribute(new Skill());
-        model.addAttribute("skills", skillRepository.findAll());
+//        model.addAttribute("skills", skillRepository.findAll());
         return "skills/add";
     }
 
@@ -38,18 +38,24 @@ public class SkillController {
                                          Errors errors, Model model) {
         if (errors.hasErrors()) {
             model.addAttribute("title", "Add Skill");
+            model.addAttribute(newSkill);
             return "skills/add";
         }
         skillRepository.save(newSkill);
-        return "skills/index";
+        return "redirect:";
     }
 
     @GetMapping("view/{skillId}")
     public String displayViewSkill(Model model, @PathVariable int skillId) {
-        Optional optSkill = skillRepository.findById(skillId);
-        if (optSkill.isPresent()) {
-            Skill skills = (Skill) optSkill.get();
-            model.addAttribute("skills", skills);
+
+        Optional result = skillRepository.findById(skillId);
+
+        if(result.isEmpty()){
+            model.addAttribute("title", "Invalid Skill Id: " + skillId);
+        } else {
+            Skill skill = (Skill) result.get();
+            model.addAttribute("title", skill.getName() + "Skill");
+            model.addAttribute("skills", skill);
         }
         return "view/{skillId}";
     }
