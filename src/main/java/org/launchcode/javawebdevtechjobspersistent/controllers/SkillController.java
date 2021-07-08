@@ -48,12 +48,12 @@ public class SkillController {
     @GetMapping("view/{skillId}")
     public String displayViewSkill(Model model, @PathVariable int skillId) {
 
-        Optional result = skillRepository.findById(skillId);
+        Optional <Skill> result = skillRepository.findById(skillId);
 
         if(result.isEmpty()){
             model.addAttribute("title", "Invalid Skill Id: " + skillId);
         } else {
-            Skill skill = (Skill) result.get();
+            Skill skill = result.get();
             model.addAttribute("title", skill.getName() + "Skill");
             model.addAttribute("skills", skill);
         }

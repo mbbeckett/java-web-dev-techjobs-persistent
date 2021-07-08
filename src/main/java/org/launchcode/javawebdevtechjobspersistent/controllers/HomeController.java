@@ -46,28 +46,32 @@ public class HomeController {
         return "/add";
     }
 
+//    @RequestParam makes the controller look for the query string in the URL that matches its parameter and puts
+//    value into the response text. So do I need to add a PathVariable to the URL??
     @PostMapping("add")
     public String processAddJobForm(@ModelAttribute @Valid Job newJob,
                                     Errors errors, Model model,
-                                    @RequestParam Integer employerId,
+                                    @RequestParam int employerId,
                                     @RequestParam List<Integer> skills) {
         if(!errors.hasErrors()) {
             List<Skill> skillObjs = (List<Skill>) skillRepository.findAllById(skills);
             newJob.setSkills(skillObjs);
-            model.addAttribute("title", "Add Skill to: " + newJob.getName());
-            model.addAttribute("skills", skillRepository.findAll());
-
-            Optional<Employer> optionalEmployer = employerRepository.findById(employerId);
-            if(optionalEmployer.isPresent()){
-                Employer employerParam = optionalEmployer.get();
-
-                employerRepository.save(employerParam);
-                model.addAttribute("employer", employerParam);
-                //jobRepository.save(newJob);
-//                model.addAttribute("skills", newJob.getSkills());
-            }
+            jobRepository.save(newJob);
+            model.addAttribute("skills", newJob.getSkills());
         }
-        return "/view";
+
+        Optional<Employer> result = employerRepository.findById(employerId);
+        if(result.isPresent()){
+            Employer employer = result.get();
+            employerRepository.save(employer);
+//            model.addAttribute("employers", employerRepository.findById(employerId));
+//            model.addAttribute("employerId", employer.getId());
+        }
+
+        //            model.addAttribute("employerId", employerRepository.findById(employerId));
+//            model.addAttribute("skills", newJob.getSkills());
+
+        return "view";
     }
 
     @GetMapping("view/{jobId}")
@@ -79,7 +83,7 @@ public class HomeController {
             Job job = optionalJob.get();
             model.addAttribute("job", job.getId());
         }
-        return "redirect:view?jobId=" + jobId;
+        return "redirect:/view?jobId=" + jobId;
 
 //        return "/view/{jobId}";
     }
