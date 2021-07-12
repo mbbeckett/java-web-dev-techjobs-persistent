@@ -1,37 +1,29 @@
 package org.launchcode.javawebdevtechjobspersistent.models;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 public class Job extends AbstractEntity{
 
-//    FIELDS
     @ManyToOne
-    @NotNull(message = "Employer required.")
+    @NotNull
     private Employer employer;
 
-//    TODO: WHAT DATA TYPE IS THE SKILLS FIELD?
-    @ManyToMany
-    @Size(min = 8, max = 200)
-    private List<Skill> skills = new ArrayList<>();
+    private String skills;
 
-//    CONSTRUCTORS
-    public Job(Employer employer) {
-        this.employer = employer;
+    public Job() {
     }
 
-    public Job(List<Skill> skills) {
-        this.skills = skills;
+    public Job(Employer anEmployer, String someSkills) {
+        super();
+        this.employer = anEmployer;
+        this.skills = someSkills;
     }
 
-    public Job() { }
+    // Getters and setters.
 
-//    GETTERS SETTERS
+
     public Employer getEmployer() {
         return employer;
     }
@@ -40,9 +32,11 @@ public class Job extends AbstractEntity{
         this.employer = employer;
     }
 
-    public List<Skill> getSkills() { return skills; }
+    public String getSkills() {
+        return skills;
+    }
 
-    public void setSkills(List<Skill> skills) {
+    public void setSkills(String skills) {
         this.skills = skills;
     }
 }

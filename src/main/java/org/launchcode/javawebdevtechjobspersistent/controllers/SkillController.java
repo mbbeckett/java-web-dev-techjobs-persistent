@@ -19,45 +19,39 @@ public class SkillController {
     private SkillRepository skillRepository;
 
     @GetMapping
-    private String displayAllSkills(Model model){
-        model.addAttribute("title", "All Skills");
+    private String index(Model model){
         model.addAttribute("skills", skillRepository.findAll());
-        return("skills/index");
+        return "skills/index";
     }
 
     @GetMapping("add")
-    public String displayAddSkillForm(Model model) {
-        model.addAttribute("title", "Add Skills");
+    private String displayAddSkillForm(Model model){
         model.addAttribute(new Skill());
-//        model.addAttribute("skills", skillRepository.findAll());
         return "skills/add";
     }
 
     @PostMapping("add")
-    public String processAddSkillForm(@ModelAttribute @Valid Skill newSkill,
-                                         Errors errors, Model model) {
-        if (errors.hasErrors()) {
-            model.addAttribute("title", "Add Skill");
-            model.addAttribute(newSkill);
+    private String processAddSkillForm(@ModelAttribute @Valid Skill newSkill, Errors errors, Model model){
+
+        if(errors.hasErrors()){
             return "skills/add";
         }
+
+        model.addAttribute("skill", newSkill);
         skillRepository.save(newSkill);
         return "redirect:";
     }
 
     @GetMapping("view/{skillId}")
-    public String displayViewSkill(Model model, @PathVariable int skillId) {
-
-        Optional <Skill> result = skillRepository.findById(skillId);
-
-        if(result.isEmpty()){
-            model.addAttribute("title", "Invalid Skill Id: " + skillId);
+    private String displayViewSkill(Model model, @PathVariable int skillId){
+        Optional optSkill = skillRepository.findById(skillId);
+        if(optSkill.isPresent()){
+            Skill skill = (Skill) optSkill.get();
+            model.addAttribute("skill", skill);
+            return "skills/view";
         } else {
-            Skill skill = result.get();
-            model.addAttribute("title", skill.getName() + "Skill");
-            model.addAttribute("skills", skill);
+            return "redirect:../";
         }
-        return "view/{skillId}";
     }
-}
 
+}

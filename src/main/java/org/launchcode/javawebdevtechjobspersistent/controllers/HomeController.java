@@ -2,10 +2,8 @@ package org.launchcode.javawebdevtechjobspersistent.controllers;
 
 import org.launchcode.javawebdevtechjobspersistent.models.Employer;
 import org.launchcode.javawebdevtechjobspersistent.models.Job;
-import org.launchcode.javawebdevtechjobspersistent.models.Skill;
 import org.launchcode.javawebdevtechjobspersistent.models.data.EmployerRepository;
 import org.launchcode.javawebdevtechjobspersistent.models.data.JobRepository;
-import org.launchcode.javawebdevtechjobspersistent.models.data.SkillRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -22,135 +20,62 @@ import java.util.Optional;
 @Controller
 public class HomeController {
 
-    @Autowired
-    private SkillRepository skillRepository;
-
+//    ADDED JOBREPO INSTANCE. NOT LISTED IN INSTRUCTIONS
     @Autowired
     private JobRepository jobRepository;
 
     @Autowired
     private EmployerRepository employerRepository;
 
-    @RequestMapping("index")
+    @RequestMapping("")
     public String index(Model model) {
+
         model.addAttribute("title", "My Jobs");
-        model.addAttribute("jobs", jobRepository.findAll());
-        return "/index";
+
+        return "index";
     }
 
     @GetMapping("add")
     public String displayAddJobForm(Model model) {
         model.addAttribute("title", "Add Job");
         model.addAttribute(new Job());
-        model.addAttribute("jobs", jobRepository.findAll());
-        return "/add";
+        model.addAttribute("employers", employerRepository.findAll());
+//        YES THIS WORKS NOW DON'T YOU DARE MESS WITH THIS
+        return "add";
     }
-
-//    @RequestParam makes the controller look for the query string in the URL that matches its parameter and puts
-//    value into the response text. So do I need to add a PathVariable to the URL??
+//THIS CONTROLLER METHOD IS WHERE THE PROBLEM LIES
+//NEED TO CONNECT EMPLOYER OBJECT TO JOB TABLE
+//    ADD LIST<JOBS> AS @REQUESTPARAM BECAUSE IT CREATES A COMMON FIELD WITH SKILL AND EMPLOYER
     @PostMapping("add")
     public String processAddJobForm(@ModelAttribute @Valid Job newJob,
-                                    Errors errors, Model model,
-                                    @RequestParam int employerId,
-                                    @RequestParam List<Integer> skills) {
-        if(!errors.hasErrors()) {
-            List<Skill> skillObjs = (List<Skill>) skillRepository.findAllById(skills);
-            newJob.setSkills(skillObjs);
-            jobRepository.save(newJob);
-            model.addAttribute("skills", newJob.getSkills());
+                                    Errors errors, Model model, @RequestParam Integer employerId,
+                                    @RequestParam List<Integer> skills,
+                                    @RequestParam List<Job> jobs) {
+
+        if (errors.hasErrors()) {
+            model.addAttribute("title", "Add Job");
+            return "add";
         }
-
-        Optional<Employer> result = employerRepository.findById(employerId);
-        if(result.isPresent()){
-            Employer employer = result.get();
-            employerRepository.save(employer);
-//            model.addAttribute("employers", employerRepository.findById(employerId));
-//            model.addAttribute("employerId", employer.getId());
-        }
-
-        //            model.addAttribute("employerId", employerRepository.findById(employerId));
-//            model.addAttribute("skills", newJob.getSkills());
-
-        return "view";
+//        if(employerId==null){
+//            model.addAttribute("jobs", jobRepository.findAll());
+//        } else {
+//            Optional<Employer> result = employerRepository.findById(employerId);
+//            if (result.isEmpty()) {
+//                model.addAttribute("title", "Invalid ID " + employerId);
+//            } else {
+//                Employer employer = result.get();
+//                model.addAttribute("employers", employerRepository.findById(employerId));
+//                jobRepository.save(newJob);
+//            }
+//        }
+        return "redirect:";
     }
 
     @GetMapping("view/{jobId}")
     public String displayViewJob(Model model, @PathVariable int jobId) {
-        Optional<Job> optionalJob = jobRepository.findById(jobId);
-        if(optionalJob.isEmpty()){
-            model.addAttribute("title", "Invalid Category ID: " + jobId);
-        } else {
-            Job job = optionalJob.get();
-            model.addAttribute("job", job.getId());
-        }
-        return "redirect:/view?jobId=" + jobId;
 
-//        return "/view/{jobId}";
+        return "view";
     }
+
+
 }
-
-
-//        if(!errors.hasErrors()) {
-//                List<Skill> skillObjs = (List<Skill>) skillRepository.findAllById(skills);
-//        newJob.setSkills(skillObjs);
-//        Optional<Employer> optionalEmployer = employerRepository.findById(employerId);
-//        if(optionalEmployer.isPresent()){
-//        Employer employerParam = optionalEmployer.get();
-//        jobRepository.save(newJob);
-//        employerRepository.save(employerParam);
-//        model.addAttribute("employer", employerParam);
-//        model.addAttribute("skills", newJob.getSkills());
-//        }
-//        return "redirect:";
-//        }
-//        return "/view";
-
-//    List<Skill> skillObjs = (List<Skill>) skillRepository.findAllById(skills);
-//        newJob.setSkills(skillObjs);
-//                model.addAttribute("title", "Add Skills to: " + newJob.getName());
-//                model.addAttribute("skills", newJob.getSkills());
-//                Optional<Employer> optionalEmployer = employerRepository.findById(employerId);
-//        if(optionalEmployer.isPresent()){
-//        Employer employerParam = optionalEmployer.get();
-//        jobRepository.save(newJob);
-//        employerRepository.save(employerParam);
-//        model.addAttribute("employer", employerParam);
-//        }
-//        return "view";
-
-
-
-
-//        what is happening in this block of code?
-//        skills.get(employerId);
-//        model.addAttribute("employerId", employerId);
-//        model.addAttribute("skills", newJob.getSkills());
-//        employerRepository.save(newJob.getEmployer());
-
-//    Optional optJob = employerRepository.findById(jobId);
-//        if(optJob.isPresent()){
-//                Job job = (Job) optJob.get();
-//                model.addAttribute("job", job);
-//                return "view/{jobId}";
-//                }
-//                return "redirect:";
-
-
-//processAddJobForm?
-// employerRepository.save(newJob.getEmployer());
-
-
-//        if (errors.hasErrors()) {
-//            model.addAttribute("title", "Add Job");
-//            return "add";
-//        } else {
-//            Optional<Employer> employerRepositoryById = employerRepository.findById(employerId);
-//            if(employerRepositoryById.isEmpty()){
-//                model.addAttribute("title", "Invalid ID" + employerId);
-//            } else {
-//
-//                model.addAttribute("employers", newJob.getEmployer());
-//                model.addAttribute("skills", newJob.getSkills());
-//            }
-//        }
-

@@ -1,3 +1,4 @@
+
 package org.launchcode.javawebdevtechjobspersistent.controllers;
 
 import org.launchcode.javawebdevtechjobspersistent.models.Employer;
@@ -18,59 +19,44 @@ public class EmployerController {
     @Autowired
     private EmployerRepository employerRepository;
 
-    @GetMapping("/employers")
-    public String displayAllEmployers(Model model){
-        model.addAttribute("title", "All Employers");
+    @GetMapping
+    private String index(Model model){
         model.addAttribute("employers", employerRepository.findAll());
         return "employers/index";
+//        ROUTING WORKS FOR INDEX METHOD, DON'T MESS WITH IT :)
     }
 
     @GetMapping("add")
     public String displayAddEmployerForm(Model model) {
-        model.addAttribute("title", "Add Employer");
         model.addAttribute(new Employer());
-//        model.addAttribute("employers", employerRepository.findAll());
-        model.addAttribute("employers", employerRepository.findAll());
         return "employers/add";
     }
 
     @PostMapping("add")
     public String processAddEmployerForm(@ModelAttribute @Valid Employer newEmployer,
-                                    Errors errors, Model model) {
+                                         Errors errors, Model model) {
+
         if (errors.hasErrors()) {
-            model.addAttribute("title", "Add Employer");
-            model.addAttribute(new Employer());
             return "employers/add";
         }
-        employerRepository.save(newEmployer);
-        model.addAttribute("employerId", employerRepository.findById(newEmployer.getId()));
 
+        model.addAttribute("employer", newEmployer);
+        employerRepository.save(newEmployer);
         return "redirect:";
+//        WORKS SO DON'T MESS WITH IT PLEASE
     }
 
     @GetMapping("view/{employerId}")
     public String displayViewEmployer(Model model, @PathVariable int employerId) {
 
-        Optional<Employer> result = employerRepository.findById(employerId);
-
-            if(result.isEmpty()){
-                model.addAttribute("title", "Invalid Employer ID: " + employerId);
-            } else {
-                Employer employer = result.get();
-                model.addAttribute("title","Employer: " + employer.getName());
-                model.addAttribute("employer", employer);
-            }
-            return "view/{employerId}";
+        Optional optEmployer = employerRepository.findById(employerId);
+        if (optEmployer.isPresent()) {
+            Employer employer = (Employer) optEmployer.get();
+            model.addAttribute("employer", employer);
+            return "employers/view";
+        } else {
+            return "redirect:../";
+//            ROUTING WORKS HERE TOO SO DON'T TOUCH
+        }
     }
 }
-
-
-
-
-
-
-
-
-//            } else {
-//                model.addAttribute("title", "All Employers");
-//                model.addAttribute("Employers", employerRepository.findAll());

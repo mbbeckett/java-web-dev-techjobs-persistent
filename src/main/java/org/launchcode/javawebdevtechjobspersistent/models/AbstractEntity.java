@@ -4,21 +4,18 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.Objects;
 
 @MappedSuperclass
 public abstract class AbstractEntity {
 
-//    FIELDS
     @Id
     @GeneratedValue
     private int id;
 
     @NotBlank
-    @NotNull
-    @Size(min = 3, max = 100, message = "Name must be between 3 and 100 characters.")
+    @Size(max = 100)
     private String name;
 
     public int getId() {
@@ -29,7 +26,10 @@ public abstract class AbstractEntity {
         return name;
     }
 
-    //    METHODS
+    public void setName(String name) {
+        this.name = name;
+    }
+
     @Override
     public String toString() {
         return name;
@@ -39,8 +39,8 @@ public abstract class AbstractEntity {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        AbstractEntity entity = (AbstractEntity) o;
-        return id == entity.id;
+        AbstractEntity that = (AbstractEntity) o;
+        return id == that.id;
     }
 
     @Override
