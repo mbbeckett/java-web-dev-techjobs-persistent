@@ -13,7 +13,6 @@ import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -49,11 +48,7 @@ public class HomeController {
     }
 
 //THIS CONTROLLER METHOD IS WHERE THE PROBLEM LIES
-//NO JOB OBJECTS BEING CREATED
-//    NOTHING IS GOING INTO THE JOB REPO
-//    INSTRUCTIONS IMPLY I NEED TO ADD ANOTHER REQUESTPARAM? LIST<JOB> JOBS?
-//    I AM CONFUSED ABT THE @REQUESTPARAM LIST<INTEGER> SKILLS - HAS SOMETHING TO DO WITH MAPPED BY "SKILLS" -
-//    WOULD THE LIST BE ALL OF THE SKILLS IDS OR AM I LOSING MY MIND?
+//NO JOB OBJECTS BEING CREATED & NOTHING IS GOING INTO THE JOB REPO
     @PostMapping("add")
     public String processAddJobForm(@ModelAttribute @Valid Job newJob,
                                     Errors errors, Model model, @RequestParam int employerId,
@@ -67,14 +62,17 @@ public class HomeController {
 
         List<Skill> skillObjs = (List<Skill>) skillRepository.findAllById(skills);
         newJob.setSkills(skillObjs);
-        Optional<Employer> optionalEmployer = employerRepository.findById(employerId);
-        if (optionalEmployer.isPresent()){
-            Employer employer = optionalEmployer.get();
-            if(employer.getJobs().contains(newJob)){
-                newJob.setEmployer(employer);
-                jobRepository.save(newJob);
-            }
-        }
+        Optional<Employer> employerObj = employerRepository.findById(employerId);
+        Employer employer = employerObj.get();
+        newJob.setEmployer(employer);
+        employerRepository.save(newJob.getEmployer());
+//        skillRepository.save(newJob.getSkills());
+        model.addAttribute("employerId", jobRepository.findById(employerId));
+        model.addAttribute("skills", jobRepository.findAllById(skills));
+//            if(employer.getJobs().contains(newJob)){
+//                newJob.setEmployer(employer);
+//                jobRepository.save(newJob);
+
         return "redirect:";
     }
 
