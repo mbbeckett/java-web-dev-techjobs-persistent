@@ -6,6 +6,7 @@ import org.launchcode.javawebdevtechjobspersistent.models.Skill;
 import org.launchcode.javawebdevtechjobspersistent.models.data.EmployerRepository;
 import org.launchcode.javawebdevtechjobspersistent.models.data.JobRepository;
 import org.launchcode.javawebdevtechjobspersistent.models.data.SkillRepository;
+import org.launchcode.javawebdevtechjobspersistent.models.dto.JobSkillDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -13,6 +14,7 @@ import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -34,9 +36,8 @@ public class HomeController {
 
     @RequestMapping("")
     public String index(Model model) {
-
         model.addAttribute("title", "My Jobs");
-
+        model.addAttribute("jobs", jobRepository.findAll());
         return "index";
     }
 
@@ -46,14 +47,12 @@ public class HomeController {
         model.addAttribute(new Job());
         model.addAttribute("employers", employerRepository.findAll());
         model.addAttribute("skills", skillRepository.findAll());
-
-        //        YES THIS WORKS NOW DON'T YOU DARE MESS WITH THIS
         return "add";
     }
+
 //THIS CONTROLLER METHOD IS WHERE THE PROBLEM LIES
 //NEED TO CONNECT EMPLOYER OBJECT TO JOB TABLE
-//    INSTRUCTIONS IMPLY I NEED TO ADD ANOTHER REQUESTPARAM?
-// JOB OBJECTS ARE GOING INTO THE TABLE BUT NOT THE SKILLS AND EMPLOYER OBJECTS
+//    INSTRUCTIONS IMPLY I NEED TO ADD ANOTHER REQUESTPARAM? LIST<JOB> JOBS?
     @PostMapping("add")
     public String processAddJobForm(@ModelAttribute @Valid Job newJob,
                                     Errors errors, Model model, @RequestParam Integer employerId,
@@ -63,29 +62,29 @@ public class HomeController {
             model.addAttribute("title", "Add Job");
             return "add";
         }
-        if(employerId==null){
-            model.addAttribute("jobs", jobRepository.findAll());
-        } else {
-            Optional<Employer> result = employerRepository.findById(employerId);
-            if (result.isEmpty()) {
-                model.addAttribute("title", "Invalid ID " + employerId);
-            } else {
-                Employer employer = result.get();
-                List<Skill> skillObjs = (List<Skill>) skillRepository.findAllById(skills);
-                newJob.setSkills(skillObjs);
-                model.addAttribute("employers", employer);
-                model.addAttribute("skills", newJob.getSkills());
-                jobRepository.save(newJob);
-            }
+
+        List<Skill> skillObjs = (List<Skill>) skillRepository.findAllById(skills);
+        newJob.setSkills(skillObjs);
+        Optional<Employer> optionalEmployer = employerRepository.findById(employerId);
+        if(optionalEmployer.isPresent()){
+            Employer employer = optionalEmployer.get();
+            newJob.setEmployer(employer);
         }
+        jobRepository.save(newJob);
         return "redirect:";
     }
 
+
+//ISSUE IS WITH VIEW AND PROCESS CONTROLLERS
+//    NOTHING IS GOING INTO THE JOB REPO
     @GetMapping("view/{jobId}")
     public String displayViewJob(Model model, @PathVariable int jobId) {
-
-        return "view";
+        Optional result = jobRepository.findById(jobId);
+        if(result.isPresent()){
+            Job jobs = (Job) result.get();
+            model.addAttribute("jobs", jobs);
+            return "view/{jobId}";
+        }
+        return "redirect:../";
     }
-
-
 }
