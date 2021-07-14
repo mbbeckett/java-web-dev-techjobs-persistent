@@ -1,7 +1,6 @@
 package org.launchcode.javawebdevtechjobspersistent.models;
 
 import javax.persistence.*;
-import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.List;
@@ -10,11 +9,11 @@ import java.util.List;
 public class Job extends AbstractEntity{
 
     @ManyToOne
-    @NotNull
+    @NotNull(message = "Employer is required")
     private Employer employer;
 
     @ManyToMany
-    @NotNull
+    @NotNull(message = "Skills required")
     private List<Skill> skills = new ArrayList<>();
 
     public Job() { }
@@ -26,7 +25,6 @@ public class Job extends AbstractEntity{
     }
 
     // Getters and setters.
-
 
     public Employer getEmployer() {
         return employer;
@@ -43,4 +41,5 @@ public class Job extends AbstractEntity{
     public void setSkills(List<Skill> skills) {
         this.skills = skills;
     }
+
 }

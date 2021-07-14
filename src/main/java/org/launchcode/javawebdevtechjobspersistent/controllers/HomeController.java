@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Created by LaunchCode
@@ -33,7 +34,7 @@ public class HomeController {
     @RequestMapping("")
     public String index(Model model) {
         model.addAttribute("title", "My Jobs");
-        model.addAttribute("jobs", jobRepository.findAll());
+//        model.addAttribute("jobs", jobRepository.findAll());
         return "index";
     }
 
@@ -48,19 +49,38 @@ public class HomeController {
 
     @PostMapping("add")
     public String processAddJobForm(@ModelAttribute @Valid Job newJob,
-                                    Errors errors, Model model, @RequestParam int employerId,
+                                    Errors errors, Model model, @RequestParam Integer employerId,
                                     @RequestParam List<Integer> skills){
         if (errors.hasErrors()) {
             model.addAttribute("title", "Add Job");
+            System.out.println("hi");
             return "add";
         }
 
-        List<Skill> skillObjs = (List<Skill>) skillRepository.findAllById(skills);
-        newJob.setSkills(skillObjs);
-        Employer employer = employerRepository.findById(employerId).orElse(new Employer());
-        newJob.setEmployer(employer);
-
+//        Employer employer = employerRepository.findById(employerId).orElse(new Employer());
+//        newJob.setEmployer(employer);
+//        List<Skill> skillObjs = (List<Skill>) skillRepository.findAllById(skills);
+//        newJob.setSkills(skillObjs);
         jobRepository.save(newJob);
+
+
+//        if(employerId==null){
+//            model.addAttribute("title", "Invalid Employer ID");
+//        } else {
+//            Optional<Employer> result = employerRepository.findById(employerId);
+//            if(result.isEmpty()) {
+//                model.addAttribute("title", "Invalid Employer ID");
+//            } else {
+//                Employer employer = result.get();
+//                model.addAttribute("employerId", employer.getJobs());
+//                newJob.setEmployer(employer);
+//                List<Skill> skillObjs = (List<Skill>) skillRepository.findAllById(skills);
+//                newJob.setSkills(skillObjs);
+//
+//            }
+//        }
+//        jobRepository.save(newJob);
+
         return "redirect:";
     }
 
@@ -70,8 +90,22 @@ public class HomeController {
 //        if(result.isPresent()){
 //            Job job = (Job) result.get();
 //            model.addAttribute("job", job);
-        model.addAttribute("job", jobRepository.findById(jobId));
+//        model.addAttribute("job", jobRepository.findById(jobId));
             return "view";
-
     }
 }
+
+
+//        Employer employer = employerRepository.findById(employerId).orElse(new Employer());
+//        newJob.setEmployer(employer);
+//        jobRepository.save(newJob);
+
+//        Optional result = employerRepository.findById(employerId);
+//        if(result.isPresent()){
+//            Employer employer = (Employer) result.get();
+//            model.addAttribute("jobs", employer.getJobs());
+//        }
+
+//                model.addAttribute("employers", employer.getJobs());
+//                model.addAttribute("employerId", employer.getId());
+//                model.addAttribute("employers", employer.getName());
