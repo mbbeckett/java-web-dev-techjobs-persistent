@@ -57,41 +57,24 @@ public class HomeController {
             return "add";
         }
 
-//        Employer employer = employerRepository.findById(employerId).orElse(new Employer());
-//        newJob.setEmployer(employer);
-//        List<Skill> skillObjs = (List<Skill>) skillRepository.findAllById(skills);
-//        newJob.setSkills(skillObjs);
+        Employer employer = employerRepository.findById(employerId).orElse(new Employer());
+        newJob.setEmployer(employer);
+        List<Skill> skillObjs = (List<Skill>) skillRepository.findAllById(skills);
+        newJob.setSkills(skillObjs);
         jobRepository.save(newJob);
-
-
-//        if(employerId==null){
-//            model.addAttribute("title", "Invalid Employer ID");
-//        } else {
-//            Optional<Employer> result = employerRepository.findById(employerId);
-//            if(result.isEmpty()) {
-//                model.addAttribute("title", "Invalid Employer ID");
-//            } else {
-//                Employer employer = result.get();
-//                model.addAttribute("employerId", employer.getJobs());
-//                newJob.setEmployer(employer);
-//                List<Skill> skillObjs = (List<Skill>) skillRepository.findAllById(skills);
-//                newJob.setSkills(skillObjs);
-//
-//            }
-//        }
-//        jobRepository.save(newJob);
 
         return "redirect:";
     }
 
     @GetMapping("view/{jobId}")
     public String displayViewJob(Model model, @PathVariable int jobId) {
-//        Optional result = jobRepository.findById(jobId);
-//        if(result.isPresent()){
-//            Job job = (Job) result.get();
-//            model.addAttribute("job", job);
-//        model.addAttribute("job", jobRepository.findById(jobId));
-            return "view";
+        Optional result = jobRepository.findById(jobId);
+        if(result.isPresent()){
+            Job job = (Job) result.get();
+            model.addAttribute("job", job);
+        model.addAttribute("job", jobRepository.findById(jobId));
+        }
+        return "view";
     }
 }
 
