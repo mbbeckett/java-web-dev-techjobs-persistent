@@ -13,6 +13,7 @@ import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -49,11 +50,11 @@ public class HomeController {
 
 //THIS CONTROLLER METHOD IS WHERE THE PROBLEM LIES
 //NO JOB OBJECTS BEING CREATED & NOTHING IS GOING INTO THE JOB REPO
+//    Add a @RequestParam to this method?
     @PostMapping("add")
     public String processAddJobForm(@ModelAttribute @Valid Job newJob,
                                     Errors errors, Model model, @RequestParam int employerId,
-                                    @RequestParam List<Integer> skills) {
-
+                                    @RequestParam List<Integer> skills){
         if (errors.hasErrors()) {
             model.addAttribute("title", "Add Job");
             model.addAttribute(new Job());
@@ -62,29 +63,36 @@ public class HomeController {
 
         List<Skill> skillObjs = (List<Skill>) skillRepository.findAllById(skills);
         newJob.setSkills(skillObjs);
+
         Optional<Employer> employerObj = employerRepository.findById(employerId);
-        Employer employer = employerObj.get();
-        newJob.setEmployer(employer);
-        employerRepository.save(newJob.getEmployer());
+        if(employerObj.isPresent()){
+            Employer employer = employerObj.get();
+            newJob.setEmployer(employer);
+        }
+        jobRepository.save(newJob);
+
+//        employerRepository.save(newJob.getEmployer());
 //        skillRepository.save(newJob.getSkills());
-        model.addAttribute("employerId", jobRepository.findById(employerId));
-        model.addAttribute("skills", jobRepository.findAllById(skills));
+//        model.addAttribute("employers", jobRepository.findById(employerId));
+//        model.addAttribute("skills", jobRepository.findAllById(skills));
 //            if(employer.getJobs().contains(newJob)){
 //                newJob.setEmployer(employer);
 //                jobRepository.save(newJob);
 
+
         return "redirect:";
     }
-
-    @GetMapping("view/{jobId}")
-    public String displayViewJob(Model model, @PathVariable int jobId) {
-        Optional result = jobRepository.findById(jobId);
-        if(result.isPresent()){
-            Job job = (Job) result.get();
-            model.addAttribute("job", job);
-            return "view/{jobId}";
-        }else {
-            return "redirect:../";
-        }
-    }
 }
+
+//    @GetMapping("view/{jobId}")
+//    public String displayViewJob(Model model, @PathVariable int jobId) {
+//        Optional result = jobRepository.findById(jobId);
+//        if(result.isPresent()){
+//            Job job = (Job) result.get();
+//            model.addAttribute("job", job);
+//            return "view/{jobId}";
+//        }else {
+//            return "redirect:../";
+//        }
+//    }
+//}
