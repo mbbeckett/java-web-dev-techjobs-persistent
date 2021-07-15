@@ -68,7 +68,24 @@ public class HomeController {
     }
 
     @GetMapping("view/{jobId}")
-    public String displayViewJob(Model model, @PathVariable int jobId) {
+    public String displayViewJob(Model model, @PathVariable Integer jobId) {
+        if (jobId == null) {
+            model.addAttribute("title", "All Events");
+            model.addAttribute("events", jobRepository.findAll());
+        } else {
+            Optional<Job> result = jobRepository.findById(jobId);
+            if (result.isEmpty()) {
+                model.addAttribute("title", "Invalid Job ID: " + jobId);
+            } else {
+                Job job = result.get();
+                model.addAttribute("title", "Jobs with ID:  " + jobId);
+                model.addAttribute("job", job);
+                return "view";
+            }
+        }
+        return "redirect:";
+    }
+}
 //        Optional result = jobRepository.findById(jobId);
 //        if(result.isPresent()) {
 //            Job job = (Job) result.get();
@@ -79,4 +96,3 @@ public class HomeController {
 //        return "view";
 //    }
 
-}
