@@ -46,39 +46,13 @@ public class EmployerController {
 
     @GetMapping("view/{employerId}")
     public String displayViewEmployer(Model model, @PathVariable int employerId) {
-            Optional optEmployer = employerRepository.findById(employerId);
+        Optional optEmployer = employerRepository.findById(employerId);
         if (optEmployer.isPresent()) {
             Employer employer = (Employer) optEmployer.get();
             model.addAttribute("employer", employer);
-            return "view";
+            return "employers/view";
         } else {
             return "redirect:../";
         }
     }
 }
-
-//        if (employerId == null) {
-//            model.addAttribute("title", "All Employers");
-//            model.addAttribute("employers", employerRepository.findAll());
-//        } else {
-//            Optional<Employer> result = employerRepository.findById(employerId);
-//            if (result.isEmpty()) {
-//                model.addAttribute("title", "Invalid Employer ID: " + employerId);
-//            } else {
-//                Employer employer = result.get();
-//                model.addAttribute("title", "Jobs with Employer: " + employer.getName());
-//                model.addAttribute("employers", employer.getJobs());
-//                return "view/{employerId}";
-//            }
-//        }
-//        return "redirect:";
-//    }
-
-//    Optional optEmployer = employerRepository.findById(employerId);
-//        if (optEmployer.isPresent()) {
-//            Employer employer = (Employer) optEmployer.get();
-//            model.addAttribute("employer", employer);
-//            return "view/{employerId}";
-//        } else {
-//            return "redirect:../";
-//        }

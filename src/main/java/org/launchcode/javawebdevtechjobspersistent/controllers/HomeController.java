@@ -86,13 +86,3 @@ public class HomeController {
         return "redirect:";
     }
 }
-//        Optional result = jobRepository.findById(jobId);
-//        if(result.isPresent()) {
-//            Job job = (Job) result.get();
-//            model.addAttribute("job", job);
-//            } else {
-//                model.addAttribute("jobs", jobRepository.findAll());
-//        }
-//        return "view";
-//    }
-
