@@ -34,7 +34,7 @@ public class HomeController {
     @RequestMapping("")
     public String index(Model model) {
         model.addAttribute("title", "My Jobs");
-//        model.addAttribute("jobs", jobRepository.findAll());
+        model.addAttribute("jobs", jobRepository.findAll());
         return "index";
     }
 
@@ -53,7 +53,8 @@ public class HomeController {
                                     @RequestParam List<Integer> skills){
         if (errors.hasErrors()) {
             model.addAttribute("title", "Add Job");
-            System.out.println("hi");
+            System.out.println(errors.getAllErrors());
+            System.out.println(errors.getGlobalError());
             return "add";
         }
 
@@ -68,27 +69,14 @@ public class HomeController {
 
     @GetMapping("view/{jobId}")
     public String displayViewJob(Model model, @PathVariable int jobId) {
-        Optional result = jobRepository.findById(jobId);
-        if(result.isPresent()){
-            Job job = (Job) result.get();
-            model.addAttribute("job", job);
-        model.addAttribute("job", jobRepository.findById(jobId));
-        }
-        return "view";
-    }
-}
-
-
-//        Employer employer = employerRepository.findById(employerId).orElse(new Employer());
-//        newJob.setEmployer(employer);
-//        jobRepository.save(newJob);
-
-//        Optional result = employerRepository.findById(employerId);
-//        if(result.isPresent()){
-//            Employer employer = (Employer) result.get();
-//            model.addAttribute("jobs", employer.getJobs());
+//        Optional result = jobRepository.findById(jobId);
+//        if(result.isPresent()) {
+//            Job job = (Job) result.get();
+//            model.addAttribute("job", job);
+//            } else {
+//                model.addAttribute("jobs", jobRepository.findAll());
 //        }
+//        return "view";
+//    }
 
-//                model.addAttribute("employers", employer.getJobs());
-//                model.addAttribute("employerId", employer.getId());
-//                model.addAttribute("employers", employer.getName());
+}
