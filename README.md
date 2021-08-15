@@ -1,10 +1,10 @@
-#TechJobs - Job Search Application 
+# TechJobs - Job Search Application 
 
-##Table of Contents
-*[General Information][#general-information]
+## Table of Contents
+* [General Information][#general-information]
 * [Technologies](#technologies)
 
-##General Information 
+## General Information 
 A Java application for entering and storing job opening data. 
 
 ## Technologies
